@@ -1,0 +1,122 @@
+public class Raetsel {
+
+	public static void main(String[] args) {
+
+		String[] words = new String[] { "datentyp", "ueberladen", "feld", "parameter", "informatik", "klasse",
+				"methode", "rekursion", "schleife", "variable" };
+		char[][] feld = new char[15][30];
+		//fits(feld,1,2,0,words[1]);
+		System.out.println(fill(feld, words));
+	}
+
+	public static boolean fits(char[][] grid, int row, int col, int dir, String word) {
+
+		String lengthRow = new String(grid[row]);
+		String lengthCol = new String(grid[col]);
+
+		if (dir == 0) {
+			if (word.length() > lengthRow.length()) {
+				return false;
+			}
+		}
+
+		if (dir == 1) {
+			if (word.length() > lengthCol.length()) {
+				return false;
+			}
+		}
+
+		char[] wordArr = word.toCharArray();
+
+		for (int i = 0; i <= wordArr.length - 1; i++) {
+			for (int j = 0; j <= grid[row].length - 1; j++) {
+				if (i != j) {
+					return false;
+				}
+			}
+		}
+
+		for (int i = 0; i <= wordArr.length - 1; i++) {
+			for (int j = row; j <= grid.length - 1; j++) {
+				for (int k = col; k <= grid[j].length - 1; k++) {
+					if (wordArr[i] != grid[j][0] || wordArr[i] != grid[j][k]) {
+						return false;
+					}
+
+				}
+			}
+		}
+		return true;
+
+	}
+
+	public static void write(char[][] grid, int row, int col, int dir, String word) {
+		char[] wordArr = word.toCharArray();
+
+		if (dir == 0) {
+			for (int i = 0; i <= wordArr.length - 1; i++) {
+				for (int j = row; j <= grid[col].length - 1; j++) {
+					grid[col][j] = wordArr[i];
+					System.out.println(grid);
+				}
+			}
+
+		}
+
+		if (dir == 1) {
+			for (int i = 0; i <= wordArr.length - 1; i++) {
+				for (int j = col; j <= grid.length - 1; j++) {
+					grid[j][row] = wordArr[i];
+
+				}
+			}System.out.println(grid);
+		}
+
+	}
+
+	public static boolean fill(char[][] grid, String[] words) {
+		
+		for (int i = 0; i <= grid.length - 1; i++) {
+			for (int j = 0; j <= grid[i].length - 1; j++) {
+				grid[i][j] = ' ';
+			}
+		}
+
+		for (int i = 0; i <= words.length - 1; i++) {
+			String word = words[i]; // слово
+			System.out.println(words[i]);
+			int dir = (int) Math.random() * 2;
+			int row = (int) Math.random() * 30;
+			int col = (int) Math.random() * 15;
+
+			if (fits(grid, row, col, dir, word)) {
+				write(grid, row, col, dir, word);
+			} else {
+				int versuch = 1;
+				while (versuch <= 100) {
+					dir = (int) Math.random() * 2;
+					row = (int) Math.random() * 30;
+					col = (int) Math.random() * 15;
+					if (fits(grid, row, col, dir, word)) {
+						write(grid, row, col, dir, word);
+						break;
+					} else {
+						if (versuch == 100 & !fits(grid, row, col, dir, word)) {
+							return false;
+						}
+						versuch++;
+
+					}
+				}
+
+			}
+
+			if (i == words.length - 1) {
+				return true;
+			}
+		}
+
+		return true;
+	}
+		
+}
